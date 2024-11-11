@@ -8,6 +8,6 @@ class AppRoutes {
 
   static List<GetPage> pages = [
     GetPage(name: splash, page: () => const SplashScreen()),
-    GetPage(name: home, page: () => HomePage()),
+    GetPage(name: home, page: () => const HomePage()),
   ];
 }

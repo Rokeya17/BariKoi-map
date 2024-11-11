@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
-      Get.offNamed(AppRoutes.home); // Navigate to Home Page after 3 seconds
+      Get.offNamed(AppRoutes.home);
     });
   }
 
@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 20),
             const SpinKitThreeBounce(
-              color: Color.fromARGB(255, 94, 152, 96), // Customize color as needed
+              color: Color.fromARGB(255, 94, 152, 96),
               size: 30.0,
             ),
           ],

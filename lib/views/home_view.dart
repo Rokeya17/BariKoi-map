@@ -15,7 +15,6 @@ class HomePage extends StatelessWidget {
         children: [
           Obx(() {
             if (mapController.locationData.value != null) {
-              // Here you would place your map widget
               return const Text("Map loaded with current location");
             } else {
               return const Center(child: CircularProgressIndicator());

@@ -25,11 +25,11 @@ class AddressInfoPanel extends StatelessWidget {
                 double startLat = mapController.locationData.value!.latitude!;
                 double startLng = mapController.locationData.value!.longitude!;
 
-                // Use actual destination coordinates for testing or user-selected marker coordinates
+               
                 double destinationLat =
-                    23.8103; // Dhaka's latitude as a test value
+                    23.8103; 
                 double destinationLng =
-                    90.4125; // Dhaka's longitude as a test value
+                    90.4125; 
 
                 mapController.getDirections(
                     startLat, startLng, destinationLat, destinationLng);
