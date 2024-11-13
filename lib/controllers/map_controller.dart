@@ -1,16 +1,19 @@
 import 'dart:convert';
 
+import 'package:barikoi_map/api.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:maplibre_gl/maplibre_gl.dart';
 
-class MapController extends GetxController {
+class HomeMapController extends GetxController {
   var locationData = Rxn<LocationData>();
-  var addressInfo = ''.obs;
+  var addressInfo = 'Getting location info'.obs;
   var directions = ''.obs;
 
   Location location = Location();
-  final String apiKey = 'API_KEY';
+  MapLibreMapController? maplibreMapController;
+
 
   @override
   void onInit() {
@@ -30,35 +33,57 @@ class MapController extends GetxController {
     }
 
     if (permissionGranted == PermissionStatus.granted) {
-      locationData.value = await location.getLocation();
+      updateMapLocation();
+    }
+  }
+
+  Future<void> updateMapLocation() async {
+    locationData.value = await location.getLocation();
+    if (locationData.value != null && maplibreMapController != null) {
+      maplibreMapController!.animateCamera(
+        CameraUpdate.newLatLng(
+          LatLng(
+            locationData.value!.latitude!,
+            locationData.value!.longitude!,
+          ),
+        ),
+      );
+      getAddressFromCoordinates(
+        locationData.value!.latitude!,
+        locationData.value!.longitude!,
+      );
     }
   }
 
   Future<void> getAddressFromCoordinates(
-      double latitude, double longitude) async {
+    double latitude,
+    double longitude,
+  ) async {
     final url = Uri.parse(
-        'https://barikoi.xyz/v1/api/search/reverse/$apiKey/$latitude/$longitude');
+      'https://barikoi.xyz/v1/api/search/reverse/$apiKey/geocode?longitude=$longitude&latitude=$latitude',
+    );
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      var data = json.decode(response.body);
+      final Map<String, dynamic> data = json.decode(response.body);
+
       addressInfo.value = data['place']['address'];
     } else {
       addressInfo.value = "Error fetching address";
     }
   }
 
-  Future<void> getDirections(
-      double startLat, double startLng, double endLat, double endLng) async {
-    final url = Uri.parse(
-        'https://barikoi.xyz/v1/api/search/directions/$apiKey/$startLat/$startLng/$endLat/$endLng');
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      var data = json.decode(response.body);
-      directions.value = data['geojson'];
-    } else {
-      directions.value = "Error fetching directions";
-    }
-  }
+  // Future<void> getDirections(
+  //     double startLat, double startLng, double endLat, double endLng) async {
+  //   final url = Uri.parse(
+  //       'https://barikoi.xyz/v1/api/search/directions/$apiKey/$startLat/$startLng/$endLat/$endLng');
+  //   final response = await http.get(url);
+  //
+  //   if (response.statusCode == 200) {
+  //     var data = json.decode(response.body);
+  //     directions.value = data['geojson'];
+  //   } else {
+  //     directions.value = "Error fetching directions";
+  //   }
+  // }
 }
